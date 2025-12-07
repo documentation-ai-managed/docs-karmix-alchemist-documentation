@@ -1,0 +1,228 @@
+---
+title: Integrations
+description: Connect Karmix Alchemist with your favorite tools and services
+---
+
+## Popular Integrations
+
+Karmix Alchemist integrates seamlessly with the tools your team already uses, creating a unified documentation workflow.
+
+<Columns cols={4}>
+  <Card title="GitHub" icon="github" href="#github">
+    Sync repositories and pull requests.
+  </Card>
+  <Card title="Slack" icon="message-square" href="#slack">
+    Get notifications and collaborate in channels.
+  </Card>
+  <Card title="Jira" icon="layout" href="#jira">
+    Link documentation to issues and projects.
+  </Card>
+  <Card title="Zapier" icon="zap" href="#zapier">
+    Automate workflows with 2000+ apps.
+  </Card>
+</Columns>
+
+## GitHub Integration
+
+Connect your GitHub repositories to automatically sync documentation with code changes.
+
+<Tabs>
+  <Tab title="Setup" icon="settings">
+    Configure GitHub integration in minutes.
+    
+    <Steps>
+      <Step title="Install GitHub App" icon="download">
+        Install the Karmix Alchemist app from GitHub Marketplace.
+      </Step>
+      <Step title="Authorize Repository" icon="key">
+        Grant access to the repositories you want to sync.
+        
+        <CodeGroup tabs="OAuth Setup,Personal Access Token">
+          ````javascript
+          // OAuth flow
+          const githubAuth = await karmix.integrations.github.authorize({
+            scopes: ['repo', 'read:org'],
+            redirectUrl: 'https://karmix.app/github/callback'
+          });
+          ````
+          ````bash
+          # Generate personal access token
+          curl -H "Authorization: token YOUR_TOKEN" \
+            https://api.github.com/user/repos
+          ````
+        </CodeGroup>
+      </Step>
+      <Step title="Configure Sync" icon="refresh-cw">
+        Set up automatic syncing for documentation files.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="Features" icon="star">
+    Powerful features for GitHub integration.
+    
+    <ExpandableGroup>
+      <Expandable title="Auto-sync READMEs" default-open="false">
+        Automatically sync repository README files to Karmix projects.
+      </Expandable>
+      <Expandable title="Pull Request Docs" default-open="false">
+        Generate documentation for API changes in pull requests.
+      </Expandable>
+      <Expandable title="Issue Linking" default-open="false">
+        Link documentation pages to GitHub issues and discussions.
+      </Expandable>
+    </ExpandableGroup>
+  </Tab>
+</Tabs>
+
+## Slack Integration
+
+Keep your team informed about documentation updates directly in Slack.
+
+<Columns cols={2}>
+  <Card title="Notifications" icon="bell" href="#slack-notifications">
+    Get notified when documents are updated or published.
+  </Card>
+  <Card title="Commands" icon="terminal" href="#slack-commands">
+    Use Slack commands to interact with Karmix Alchemist.
+  </Card>
+</Columns>
+
+<Tabs>
+  <Tab title="Setup" icon="settings">
+    Connect Slack in just a few clicks.
+    
+    <Steps>
+      <Step title="Add to Slack" icon="plus">
+        Click "Add to Slack" and authorize the integration.
+      </Step>
+      <Step title="Configure Channels" icon="hash">
+        Choose which channels should receive notifications.
+        
+        <CodeGroup tabs="Webhook Config,Slash Commands">
+          ````json
+          {
+            "webhook_url": "https://hooks.slack.com/services/...",
+            "channels": ["#docs", "#engineering"],
+            "events": ["document.published", "comment.added"]
+          }
+          ````
+          ````bash
+          # Example slash commands
+          /karmix search "API authentication"
+          /karmix create "New API Guide" --project api-docs
+          /karmix status
+          ````
+        </CodeGroup>
+      </Step>
+      <Step title="Test Integration" icon="zap">
+        Send a test message to verify everything works.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="Commands" icon="terminal">
+    Interact with Karmix Alchemist from Slack.
+    
+    <Callout kind="tip">Use `/karmix help` to see all available commands in Slack.</Callout>
+  </Tab>
+</Tabs>
+
+## Jira Integration
+
+Link your documentation to Jira issues and projects for better traceability.
+
+<Steps>
+  <Step title="Connect Jira" icon="link">
+    Set up the Jira integration in your Karmix settings.
+  </Step>
+  <Step title="Link Issues" icon="external-link">
+    Associate documents with specific Jira issues.
+    
+    <CodeGroup tabs="API Link,Manual Link">
+      ````javascript
+      await karmix.integrations.jira.linkIssue({
+        documentId: 'doc-123',
+        issueKey: 'PROJ-456',
+        linkType: 'documents'
+      });
+      ````
+      ````markdown
+      <!-- JIRA:PROJ-456 -->
+      
+      # API Authentication Guide
+      
+      This document addresses requirements from JIRA issue PROJ-456.
+      
+      ## Implementation
+      
+      [Link to issue](https://company.atlassian.net/browse/PROJ-456)
+      ````
+    </CodeGroup>
+  </Step>
+  <Step title="Sync Status" icon="refresh-cw">
+    Keep documentation status in sync with issue status.
+  </Step>
+</Steps>
+
+## Zapier Integration
+
+Automate complex workflows by connecting Karmix Alchemist with thousands of apps via Zapier.
+
+<ExpandableGroup>
+  <Expandable title="Popular Zaps" default-open="false">
+    Common automation workflows using Zapier.
+  </Expandable>
+  <Expandable title="Custom Zaps" default-open="false">
+    Build your own custom integrations with Zapier.
+  </Expandable>
+</ExpandableGroup>
+
+<Tabs>
+  <Tab title="Templates" icon="template">
+    Pre-built Zap templates for common use cases.
+    
+    <CodeGroup tabs="New Doc to Slack,Status Change to Email">
+      ````json
+      // Zap: New document published → Slack notification
+      {
+        "trigger": {
+          "app": "karmix",
+          "event": "document.published"
+        },
+        "action": {
+          "app": "slack",
+          "event": "send_channel_message",
+          "data": {
+            "channel": "#docs",
+            "message": "New doc published: {{document.title}}"
+          }
+        }
+      }
+      ````
+      ````json
+      // Zap: Document status change → Email notification
+      {
+        "trigger": {
+          "app": "karmix",
+          "event": "document.status_changed"
+        },
+        "action": {
+          "app": "email",
+          "event": "send_email",
+          "data": {
+            "to": "team@company.com",
+            "subject": "Doc status changed: {{document.title}}",
+            "body": "Status changed from {{old_status}} to {{new_status}}"
+          }
+        }
+      }
+      ````
+    </CodeGroup>
+  </Tab>
+  <Tab title="Advanced" icon="settings">
+    Build complex multi-step Zaps.
+    
+    <Callout kind="info">Combine multiple apps to create sophisticated automation workflows.</Callout>
+  </Tab>
+</Tabs>
+
+<Callout kind="success">With these integrations, Karmix Alchemist becomes a central hub in your development workflow, keeping documentation in sync with your tools.</Callout>

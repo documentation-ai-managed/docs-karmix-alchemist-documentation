@@ -1,0 +1,171 @@
+---
+title: Core Concepts
+description: Fundamental concepts and architecture of Karmix Alchemist
+---
+
+## Projects and Documents
+
+At the heart of Karmix Alchemist are projects and documents. Understanding these core concepts will help you structure your documentation effectively.
+
+<Columns cols={2}>
+  <Card title="Projects" icon="folder" href="#projects">
+    Organizational units that group related documentation together.
+  </Card>
+  <Card title="Documents" icon="file-text" href="#documents">
+    Individual pieces of content within a project.
+  </Card>
+</Columns>
+
+## Projects
+
+Projects serve as containers for organizing your documentation. Think of them as folders that can contain multiple documents and have their own settings.
+
+<Tabs>
+  <Tab title="Structure" icon="layers">
+    Projects can be nested and have custom metadata.
+    
+    <CodeGroup tabs="Project Schema,Example">
+      ````json
+      {
+        "id": "api-docs",
+        "name": "API Documentation",
+        "description": "REST API reference and guides",
+        "parentId": null,
+        "metadata": {
+          "version": "v1.0",
+          "language": "en",
+          "tags": ["api", "reference"]
+        }
+      }
+      ````
+      ````javascript
+      const project = await karmix.projects.create({
+        name: 'API Documentation',
+        description: 'REST API reference and guides',
+        metadata: {
+          version: 'v1.0',
+          tags: ['api', 'reference']
+        }
+      });
+      ````
+    </CodeGroup>
+  </Tab>
+  <Tab title="Permissions" icon="shield">
+    Control access at the project level.
+    
+    <ExpandableGroup>
+      <Expandable title="Viewer Role" default-open="false">
+        Can read documents but not edit or publish.
+      </Expandable>
+      <Expandable title="Editor Role" default-open="false">
+        Can create, edit, and comment on documents.
+      </Expandable>
+      <Expandable title="Admin Role" default-open="false">
+        Full control including project settings and user management.
+      </Expandable>
+    </ExpandableGroup>
+  </Tab>
+</Tabs>
+
+## Documents
+
+Documents are the individual units of content in your documentation. They support rich formatting and can be organized hierarchically within projects.
+
+<Steps>
+  <Step title="Document Types" icon="file">
+    Choose from Markdown, HTML, or JSON formats.
+  </Step>
+  <Step title="Content Structure" icon="list">
+    Use headings, sections, and subsections for organization.
+    
+    <CodeGroup tabs="Markdown Structure,Rich Content">
+      ````markdown
+      # Document Title
+      
+      ## Section 1
+      Content here.
+      
+      ### Subsection 1.1
+      More detailed content.
+      
+      ## Section 2
+      Additional information.
+      ````
+      ````json
+      {
+        "title": "API Endpoint",
+        "content": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "heading",
+              "attrs": {"level": 1},
+              "content": [{"text": "API Endpoint", "type": "text"}]
+            },
+            {
+              "type": "paragraph",
+              "content": [{"text": "Description of the endpoint.", "type": "text"}]
+            }
+          ]
+        }
+      }
+      ````
+    </CodeGroup>
+  </Step>
+  <Step title="Metadata" icon="tag">
+    Add tags, categories, and custom fields.
+  </Step>
+</Steps>
+
+## Version Control
+
+Karmix Alchemist includes built-in version control to track changes and maintain document history.
+
+<Columns cols={3}>
+  <Card title="Automatic Saves" icon="save" href="#auto-save">
+    Every edit is automatically saved as a new version.
+  </Card>
+  <Card title="Diff View" icon="git-diff" href="#diff-view">
+    Compare changes between versions visually.
+  </Card>
+  <Card title="Rollback" icon="undo" href="#rollback">
+    Restore previous versions if needed.
+  </Card>
+</Columns>
+
+<Tabs>
+  <Tab title="Version API" icon="code">
+    Programmatically manage document versions.
+    
+    <CodeGroup tabs="Get Versions,Create Version,Restore Version">
+      ````javascript
+      const versions = await karmix.documents.getVersions('doc-123');
+      console.log(versions);
+      ````
+      ````javascript
+      const version = await karmix.documents.createVersion('doc-123', {
+        message: 'Updated API description'
+      });
+      ````
+      ````javascript
+      await karmix.documents.restoreVersion('doc-123', 'version-456');
+      ````
+    </CodeGroup>
+  </Tab>
+  <Tab title="Collaboration" icon="users">
+    Work together on documents with change tracking.
+    
+    <Callout kind="tip">Enable real-time collaboration to see changes as team members type.</Callout>
+  </Tab>
+</Tabs>
+
+<Callout kind="info">Understanding these core concepts will help you build a well-organized documentation system that scales with your team's needs.</Callout>
+
+<ExpandableGroup>
+  <Expandable title="Advanced Project Organization" default-open="false">
+    Learn about nested projects, custom fields, and advanced permission schemes.
+  </Expandable>
+  <Expandable title="Document Templates" default-open="false">
+    Create reusable templates for common document types like API references or user guides.
+  </Expandable>
+</ExpandableGroup>

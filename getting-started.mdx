@@ -1,0 +1,138 @@
+---
+title: Getting Started
+description: Quick setup guide for Karmix Alchemist
+---
+
+## Installation
+
+Setting up Karmix Alchemist is straightforward and takes less than 10 minutes. Choose your preferred installation method based on your environment.
+
+<Tabs>
+  <Tab title="Cloud" icon="cloud">
+    Start with our hosted solution for the fastest setup.
+    
+    <Steps>
+      <Step title="Sign Up" icon="user-plus">
+        Visit karmixalchemist.com and create your account.
+      </Step>
+      <Step title="Choose Plan" icon="credit-card">
+        Select a plan that fits your team's needs.
+      </Step>
+      <Step title="Setup Workspace" icon="settings">
+        Configure your workspace settings and invite team members.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="Self-Hosted" icon="server">
+    Deploy on your own infrastructure for full control.
+    
+    <CodeGroup tabs="Docker,Docker Compose">
+      ````bash
+      docker run -d -p 3000:3000 karmix/alchemist:latest
+      ````
+      ````yaml
+      version: '3.8'
+      services:
+        karmix-alchemist:
+          image: karmix/alchemist:latest
+          ports:
+            - "3000:3000"
+          environment:
+            - DATABASE_URL=postgresql://user:pass@localhost:5432/karmix
+      ````
+    </CodeGroup>
+  </Tab>
+</Tabs>
+
+## First Project
+
+Once installed, create your first documentation project to get familiar with the platform.
+
+<Steps>
+  <Step title="Create Project" icon="folder-plus">
+    Click "New Project" and give it a descriptive name.
+  </Step>
+  <Step title="Add Team Members" icon="users">
+    Invite collaborators with appropriate permissions.
+    
+    <Callout kind="tip">Use role-based access control to manage who can edit, comment, or publish documents.</Callout>
+  </Step>
+  <Step title="Import Content" icon="upload">
+    Import existing documentation from Markdown files or other sources.
+    
+    <CodeGroup tabs="CLI,API">
+      ````bash
+      karmix import --project my-project --source ./docs
+      ````
+      ````javascript
+      const karmix = require('karmix-sdk');
+      
+      await karmix.projects.import({
+        projectId: 'my-project',
+        source: './docs',
+        format: 'markdown'
+      });
+      ````
+    </CodeGroup>
+  </Step>
+  <Step title="Start Writing" icon="edit">
+    Create your first document and begin documenting.
+  </Step>
+</Steps>
+
+## Configuration
+
+Configure Karmix Alchemist to match your workflow and branding.
+
+<Columns cols={2}>
+  <Card title="Authentication" icon="lock" href="#auth-setup">
+    Set up SSO, OAuth, or API key authentication.
+  </Card>
+  <Card title="Branding" icon="palette" href="#branding">
+    Customize colors, logos, and themes.
+  </Card>
+</Columns>
+
+<Tabs>
+  <Tab title="Basic Config" icon="settings">
+    Essential settings for getting started.
+    
+    <CodeGroup tabs="config.json,Environment Variables">
+      ````json
+      {
+        "siteName": "My Documentation",
+        "defaultLanguage": "en",
+        "enableComments": true,
+        "enableVersions": true
+      }
+      ````
+      ````bash
+      export KARMIX_SITE_NAME="My Documentation"
+      export KARMIX_DEFAULT_LANG=en
+      export KARMIX_COMMENTS=true
+      export KARMIX_VERSIONS=true
+      ````
+    </CodeGroup>
+  </Tab>
+  <Tab title="Advanced Config" icon="sliders">
+    Fine-tune performance and features.
+    
+    <Expandable title="Performance Tuning" default-open="false">
+      Adjust cache settings and database connections for optimal performance.
+    </Expandable>
+    <Expandable title="Custom Plugins" default-open="false">
+      Extend functionality with custom plugins and integrations.
+    </Expandable>
+  </Tab>
+</Tabs>
+
+<Callout kind="info">For detailed configuration options, refer to our configuration reference in the advanced section.</Callout>
+
+<ExpandableGroup>
+  <Expandable title="Troubleshooting Installation" default-open="false">
+    Common issues and solutions for setup problems.
+  </Expandable>
+  <Expandable title="Migration from Other Tools" default-open="false">
+    Import content from Confluence, GitBook, or other documentation platforms.
+  </Expandable>
+</ExpandableGroup>

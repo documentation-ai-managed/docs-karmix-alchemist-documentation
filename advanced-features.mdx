@@ -1,0 +1,222 @@
+---
+title: Advanced Features
+description: Powerful features for enterprise documentation management
+---
+
+## Custom Integrations
+
+Extend Karmix Alchemist's capabilities with custom integrations and plugins.
+
+<Columns cols={3}>
+  <Card title="Webhooks" icon="webhook" href="#webhooks">
+    Trigger actions when documents change.
+  </Card>
+  <Card title="API Extensions" icon="plug" href="#api-extensions">
+    Build custom endpoints and functionality.
+  </Card>
+  <Card title="Plugin System" icon="puzzle" href="#plugins">
+    Add new features with our plugin architecture.
+  </Card>
+</Columns>
+
+## Webhooks
+
+Webhooks allow you to integrate Karmix Alchemist with external systems by sending HTTP requests when specific events occur.
+
+<Tabs>
+  <Tab title="Setup" icon="settings">
+    Configure webhooks for your projects.
+    
+    <Steps>
+      <Step title="Create Webhook" icon="plus">
+        Go to project settings and add a new webhook.
+      </Step>
+      <Step title="Configure Events" icon="bell">
+        Choose which events should trigger the webhook.
+        
+        <CodeGroup tabs="Webhook Config,Event Types">
+          ````json
+          {
+            "url": "https://api.example.com/webhook",
+            "events": ["document.created", "document.updated"],
+            "secret": "your-webhook-secret",
+            "headers": {
+              "Authorization": "Bearer token123"
+            }
+          }
+          ````
+          ````json
+          {
+            "document.created": "When a new document is created",
+            "document.updated": "When document content changes",
+            "document.published": "When document is published",
+            "project.created": "When a new project is created",
+            "user.invited": "When a user is invited to a project"
+          }
+          ````
+        </CodeGroup>
+      </Step>
+      <Step title="Test Webhook" icon="zap">
+        Send a test event to verify the integration works.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="Security" icon="shield">
+    Secure your webhook integrations.
+    
+    <Callout kind="danger">Always use HTTPS URLs and verify webhook signatures to prevent unauthorized access.</Callout>
+    
+    <CodeGroup tabs="Signature Verification,Example Payload">
+      ````javascript
+      const crypto = require('crypto');
+      
+      function verifySignature(payload, signature, secret) {
+        const expectedSignature = crypto
+          .createHmac('sha256', secret)
+          .update(payload)
+          .digest('hex');
+        return `sha256=${expectedSignature}` === signature;
+      }
+      ````
+      ````json
+      {
+        "event": "document.updated",
+        "data": {
+          "documentId": "doc-123",
+          "projectId": "proj-456",
+          "userId": "user-789",
+          "timestamp": "2024-01-15T10:30:00Z"
+        },
+        "signature": "sha256=abc123..."
+      }
+      ````
+    </CodeGroup>
+  </Tab>
+</Tabs>
+
+## API Extensions
+
+Build custom API endpoints to extend Karmix Alchemist's functionality.
+
+<Steps>
+  <Step title="Create Extension" icon="code">
+    Use our SDK to build custom endpoints.
+    
+    <CodeGroup tabs="Basic Extension,Advanced Extension">
+      ````javascript
+      const { Extension } = require('karmix-sdk');
+      
+      class CustomExtension extends Extension {
+        registerRoutes(router) {
+          router.get('/custom/stats', async (req, res) => {
+            const stats = await this.getDocumentStats();
+            res.json(stats);
+          });
+        }
+        
+        async getDocumentStats() {
+          // Custom logic here
+          return { total: 150, published: 120 };
+        }
+      }
+      
+      module.exports = CustomExtension;
+      ````
+      ````javascript
+      const { Extension, Database } = require('karmix-sdk');
+      
+      class AnalyticsExtension extends Extension {
+        constructor() {
+          super();
+          this.db = new Database();
+        }
+        
+        registerRoutes(router) {
+          router.get('/analytics/views', this.getViewAnalytics.bind(this));
+          router.post('/analytics/track', this.trackView.bind(this));
+        }
+        
+        async getViewAnalytics(req, res) {
+          const { documentId } = req.query;
+          const views = await this.db.query(
+            'SELECT COUNT(*) as views FROM document_views WHERE document_id = ?',
+            [documentId]
+          );
+          res.json(views[0]);
+        }
+        
+        async trackView(req, res) {
+          const { documentId, userId } = req.body;
+          await this.db.insert('document_views', {
+            document_id: documentId,
+            user_id: userId,
+            viewed_at: new Date()
+          });
+          res.json({ success: true });
+        }
+      }
+      
+      module.exports = AnalyticsExtension;
+      ````
+    </CodeGroup>
+  </Step>
+  <Step title="Deploy Extension" icon="upload">
+    Upload and activate your extension.
+  </Step>
+  <Step title="Test Integration" icon="check-circle">
+    Verify the extension works correctly.
+  </Step>
+</Steps>
+
+## Plugin System
+
+The plugin system allows you to add new features and modify existing behavior.
+
+<ExpandableGroup>
+  <Expandable title="Plugin Types" default-open="false">
+    Learn about different types of plugins: UI plugins, data plugins, and integration plugins.
+  </Expandable>
+  <Expandable title="Development" default-open="false">
+    Guidelines for developing and testing plugins.
+  </Expandable>
+  <Expandable title="Plugin Marketplace" default-open="false">
+    Discover and install plugins from our community marketplace.
+  </Expandable>
+</ExpandableGroup>
+
+<Tabs>
+  <Tab title="UI Plugins" icon="monitor">
+    Customize the user interface.
+    
+    <CodeGroup tabs="Custom Button,Theme Extension">
+      ````javascript
+      // Add custom toolbar button
+      karmix.plugins.register('ui', {
+        name: 'custom-button',
+        type: 'toolbar',
+        render: () => {
+          return '<button onclick="customAction()">Custom</button>';
+        }
+      });
+      ````
+      ````css
+      /* Custom theme extension */
+      .karmix-theme-custom {
+        --primary-color: #ff6b6b;
+        --secondary-color: #4ecdc4;
+      }
+      
+      .karmix-document {
+        font-family: 'Custom Font', sans-serif;
+      }
+      ````
+    </CodeGroup>
+  </Tab>
+  <Tab title="Data Plugins" icon="database">
+    Extend data processing capabilities.
+    
+    <Callout kind="info">Data plugins can add support for new document formats or modify how content is stored and retrieved.</Callout>
+  </Tab>
+</Tabs>
+
+<Callout kind="tip">Check our developer documentation for complete plugin development guides and API references.</Callout>
